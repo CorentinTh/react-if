@@ -35,7 +35,7 @@ class HTTPRequestTest {
                 "Accept: */*\r\n" +
                 "Content-Length: 22\r\n" +
                 "\r\n" +
-                "test\r\n" +
+                "public/test\r\n" +
                 "sdfsdf\r\n" +
                 "sdfsdfsdfs";
 
@@ -49,6 +49,24 @@ class HTTPRequestTest {
         assertEquals(request.getHeader("accept"), "*/*");
         assertEquals(request.getHeader("Accept"), "*/*");
     }
+
+
+    @Test
+    void parseCorrectDeleteRequest() throws InvalidRequestException {
+        String rawRequest = "DELETE /test.txt HTTP/1.1\r\n" +
+                "Host: localhost:3000\r\n" +
+                "User-Agent: insomnia/7.0.0\r\n" +
+                "Accept: */*";
+
+        HTTPRequest request = new HTTPRequest(rawRequest);
+
+        assertEquals(request.getMethod(), HTTPMethod.DELETE);
+        assertEquals(request.getRawPath(), "/test.txt");
+
+        assertEquals(request.getHeader("accept"), "*/*");
+        assertEquals(request.getHeader("Accept"), "*/*");
+    }
+
 
     @Test
     void emptyRequest() {
@@ -66,7 +84,7 @@ class HTTPRequestTest {
                     "Accept: */*\n" +
                     "Content-Length: 22\n" +
                     "\n" +
-                    "test\n" +
+                    "public/test\n" +
                     "sdfsdf\n" +
                     "sdfsdfsdfs";
 
@@ -85,7 +103,7 @@ class HTTPRequestTest {
 
         assertEquals(request.getPath(), "/ping");
         assertEquals(request.getRawPath(), "/ping?test=1");
-        assertEquals(request.getQueryParam("test"), "1");
+        assertEquals(request.getQueryParam("public/test"), "1");
     }
 
     @Test
@@ -99,7 +117,7 @@ class HTTPRequestTest {
 
         assertEquals(request.getPath(), "/ping");
         assertEquals(request.getRawPath(), "/ping?test");
-        assertEquals(request.getQueryParam("test"), "");
+        assertEquals(request.getQueryParam("public/test"), "");
     }
 
     @Test

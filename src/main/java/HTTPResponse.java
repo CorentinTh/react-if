@@ -18,8 +18,7 @@ public class HTTPResponse {
     public void send(String text) {
         body = text;
         statusCode = HTTPStatusCode.OK;
-        setHeader("Content-Type", "text/html");
-//        setHeader("Content-Length", body.length().to);
+        setHeader("Content-Length", String.valueOf(body.length()));
     }
 
     public void sendWithStatus(HTTPStatusCode code){
