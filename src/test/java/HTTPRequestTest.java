@@ -50,6 +50,24 @@ class HTTPRequestTest {
         assertEquals(request.getHeader("Accept"), "*/*");
     }
 
+
+    @Test
+    void parseCorrectDeleteRequest() throws InvalidRequestException {
+        String rawRequest = "DELETE /test.txt HTTP/1.1\r\n" +
+                "Host: localhost:3000\r\n" +
+                "User-Agent: insomnia/7.0.0\r\n" +
+                "Accept: */*";
+
+        HTTPRequest request = new HTTPRequest(rawRequest);
+
+        assertEquals(request.getMethod(), HTTPMethod.DELETE);
+        assertEquals(request.getRawPath(), "/test.txt");
+
+        assertEquals(request.getHeader("accept"), "*/*");
+        assertEquals(request.getHeader("Accept"), "*/*");
+    }
+
+
     @Test
     void emptyRequest() {
         assertThrows(InvalidRequestException.class, () -> {
