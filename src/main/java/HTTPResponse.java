@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class HTTPResponse {
-    private HTTPStatusCode statusCode = HTTPStatusCode.INTERNAL_SERVER_ERROR;
+    private HTTPStatusCode statusCode = HTTPStatusCode.NOT_FOUND;
     private HashMap<String, String> headers = new HashMap<>();
     private String body = null;
 
@@ -19,6 +19,7 @@ public class HTTPResponse {
         body = text;
         statusCode = HTTPStatusCode.OK;
         setHeader("Content-Type", "text/html");
+//        setHeader("Content-Length", body.length().to);
     }
 
     public void sendWithStatus(HTTPStatusCode code){

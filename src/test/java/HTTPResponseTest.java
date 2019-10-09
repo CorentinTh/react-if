@@ -8,16 +8,20 @@ class HTTPResponseTest {
     void emptyResponse() {
         HTTPResponse response = new HTTPResponse();
 
-        assertEquals(response.getRawHTTP(), "HTTP/1.0 500 Internal Server Error\r\nX-Powered-By: react-if");
+        assertEquals(response.getRawHTTP(), "HTTP/1.0 404 Not Found\r\nX-Powered-By: react-if");
     }
 
     @Test
     void sendHTML() {
         HTTPResponse response = new HTTPResponse();
 
-        response.sendHTML("ok");
+        response.sendHTML("okzezef");
 
-        assertEquals(response.getRawHTTP(), "HTTP/1.0 200 OK\r\nX-Powered-By: react-if\r\nContent-Type: text/html\r\n\r\nok");
+        assertEquals(response.getRawHTTP(), "HTTP/1.0 200 OK\r\n"+
+                "X-Powered-By: react-if\r\n"+
+                "Content-Type: text/html\r\n"+
+                "\r\n"+
+                "okzezef");
     }
 
     @Test
