@@ -14,7 +14,6 @@ public class HTTPRequest {
 
     public HTTPRequest(String rawRequest) throws InvalidRequestException {
         parse(rawRequest);
-
     }
 
     public void setPathMatcher(Matcher pathMatcher) {
