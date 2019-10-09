@@ -1,46 +1,69 @@
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public class HTTPResponse {
+class HTTPResponse {
     private HTTPStatusCode statusCode = HTTPStatusCode.NOT_FOUND;
     private HashMap<String, String> headers = new HashMap<>();
-    private String body = null;
+    private byte[] body = null;
 
-    public HTTPResponse() {
+    HTTPResponse() {
         setHeader("X-Powered-By", "react-if");
+        setHeader("Connection", "close");
     }
 
-    public void sendHTML(String html) {
-        send(html);
+    void send(String text) {
+        body = text.getBytes();
+        statusCode = HTTPStatusCode.OK;
+        setHeader("Content-Length", String.valueOf(body.length));
     }
 
-    public void send(String text) {
+
+    void send(byte[] text) {
         body = text;
         statusCode = HTTPStatusCode.OK;
-        setHeader("Content-Length", String.valueOf(body.length()));
+        setHeader("Content-Length", String.valueOf(body.length));
     }
 
-    public void sendWithStatus(HTTPStatusCode code){
+    void sendWithStatus(HTTPStatusCode code) {
         statusCode = code;
     }
 
-    public void setHeader(String key, String value) {
+    void setHeader(String key, String value) {
         headers.put(key, value);
     }
 
-    public String getRawHTTP() {
+//    byte[] getRawHTTP() {
+//        StringBuilder builder = new StringBuilder();
+//
+//        builder.append("HTTP/1.0 ").append(statusCode.getCode()).append(" ").append(statusCode.getMessage()).append("\r\n");
+//
+//        String headersStr = headers.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\r\n"));
+//        builder.append(headersStr);
+//
+//        if (body != null) {
+//            builder.append("\r\n\r\n").append(body);
+//        }
+//
+//        return builder.toString();
+//    }
+
+
+    void emitHttp(OutputStream stream) throws IOException {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("HTTP/1.0 ").append(statusCode.getCode()).append(" ") .append(statusCode.getMessage()).append("\r\n");
+        builder.append("HTTP/1.0 ").append(statusCode.getCode()).append(" ").append(statusCode.getMessage()).append("\r\n");
 
         String headersStr = headers.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\r\n"));
         builder.append(headersStr);
 
-        if (body != null){
-            builder.append("\r\n\r\n").append(body);
+        stream.write(builder.toString().getBytes());
+
+        if (body != null) {
+            stream.write("\r\n\r\n".getBytes());
+            stream.write(body);
         }
 
-        return builder.toString();
     }
 }

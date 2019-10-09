@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 public class WebServer {
 
@@ -15,14 +16,12 @@ public class WebServer {
             while (true) {
                 Socket socket = server.accept();
                 System.out.println("[INFO] New connection");
-
                 // Reception and response thread
                 new Thread(() -> {
                     try {
                         // in/out streams
                         BufferedReader inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         PrintStream outputStream = new PrintStream(socket.getOutputStream());
-
                         // Fetching raw request
                         StringBuilder rawRequest = new StringBuilder();
                         while (inputStream.ready()) {
@@ -35,13 +34,14 @@ public class WebServer {
                         switch (request.getMethod()) {
                             case GET:
                                 String path = request.getPath();
-                                String content;
+                                byte[] content;
                                 if ((content = SystemeIO.readFile(path)) == null) {
                                     response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
                                 } else {
                                     String[] pathSplit = path.split("\\.");
                                     response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(path));
                                     response.send(content);
+//                                    response.setHeader("Content-Length", String.valueOf(content.length));
                                 }
                                 break;
                             case POST:
@@ -61,7 +61,7 @@ public class WebServer {
                                 }
                                 break;
                             case HEAD:
-                                String filePath = request.getPath();
+                                   String filePath = request.getPath();
                                 if (SystemeIO.fileExists(request.getPath())){
                                     String[] pathSplit = filePath.split("\\.");
                                     response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(filePath));
@@ -79,7 +79,7 @@ public class WebServer {
                                 break;
                         }
 
-                        outputStream.println(response.getRawHTTP());
+                        response.emitHttp(outputStream);
                         outputStream.flush();
                         inputStream.close();
                         outputStream.close();
