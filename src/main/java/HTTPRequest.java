@@ -10,10 +10,25 @@ public class HTTPRequest {
     private HTTPMethod method;
     private String rawPath;
     private String path;
+    private Matcher pathMatcher;
 
     public HTTPRequest(String rawRequest) throws InvalidRequestException {
         parse(rawRequest);
 
+    }
+
+    public void setPathMatcher(Matcher pathMatcher) {
+        this.pathMatcher = pathMatcher;
+    }
+
+    public String getPathParam(String key){
+        if(pathMatcher == null) return null;
+
+        try{
+            return pathMatcher.group(key);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     private void parse(String rawRequest) throws InvalidRequestException {
@@ -30,12 +45,12 @@ public class HTTPRequest {
             if (rawPathSplit.length > 1) {
                 String[] rawQueryParamsSplit = rawPathSplit[1].split("&");
 
-                for (String rawQueryParams: rawQueryParamsSplit){
+                for (String rawQueryParams : rawQueryParamsSplit) {
                     String[] keyValues = rawQueryParams.split("=");
 
-                    if (keyValues.length>1){
+                    if (keyValues.length > 1) {
                         this.queryParams.put(keyValues[0], keyValues[1]);
-                    }else{
+                    } else {
                         this.queryParams.put(keyValues[0], "");
                     }
                 }
@@ -76,7 +91,7 @@ public class HTTPRequest {
         return headers.get(key.toLowerCase());
     }
 
-    public String getQueryParam(String key){
+    public String getQueryParam(String key) {
         return queryParams.get(key);
     }
 }
