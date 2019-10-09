@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.Test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class HTTPRequestTest {
@@ -97,5 +100,22 @@ class HTTPRequestTest {
         assertEquals(request.getPath(), "/ping");
         assertEquals(request.getRawPath(), "/ping?test");
         assertEquals(request.getQueryParam("test"), "");
+    }
+
+    @Test
+    void pathMatcher() throws InvalidRequestException {
+        Matcher matcher = Pattern.compile("/foo/(?<id>.*?)").matcher("/foo/bar");
+        matcher.matches();
+
+        String rawRequest = "GET /foo/bar HTTP/1.1\r\n" +
+                "Host: localhost:3000\r\n" +
+                "User-Agent: insomnia/7.0.0\r\n" +
+                "Accept: */*";
+
+        HTTPRequest request = new HTTPRequest(rawRequest);
+        request.setPathMatcher(matcher);
+
+        assertEquals(request.getPathParam("id"), "bar");
+
     }
 }
