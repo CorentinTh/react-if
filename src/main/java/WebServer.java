@@ -1,12 +1,7 @@
-import javafx.util.Pair;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
+import java.net.URLConnection;
 
 public class WebServer {
 
@@ -37,12 +32,15 @@ public class WebServer {
                         HTTPRequest request = new HTTPRequest(rawRequest.toString());
                         HTTPResponse response = new HTTPResponse();
 
-                        switch (request.getMethod()){
+                        switch (request.getMethod()) {
                             case GET:
+                                String path = request.getPath();
                                 String content;
-                                if((content = File.readFile(request.getPath())) == null){
+                                if ((content = SystemeIO.readFile(path)) == null) {
                                     response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
-                                }else{
+                                } else {
+                                    String[] pathSplit = path.split("\\.");
+                                    response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(path));
                                     response.send(content);
                                 }
                                 break;

@@ -35,7 +35,7 @@ class HTTPRequestTest {
                 "Accept: */*\r\n" +
                 "Content-Length: 22\r\n" +
                 "\r\n" +
-                "test\r\n" +
+                "public/test\r\n" +
                 "sdfsdf\r\n" +
                 "sdfsdfsdfs";
 
@@ -66,7 +66,7 @@ class HTTPRequestTest {
                     "Accept: */*\n" +
                     "Content-Length: 22\n" +
                     "\n" +
-                    "test\n" +
+                    "public/test\n" +
                     "sdfsdf\n" +
                     "sdfsdfsdfs";
 
@@ -85,7 +85,7 @@ class HTTPRequestTest {
 
         assertEquals(request.getPath(), "/ping");
         assertEquals(request.getRawPath(), "/ping?test=1");
-        assertEquals(request.getQueryParam("test"), "1");
+        assertEquals(request.getQueryParam("public/test"), "1");
     }
 
     @Test
@@ -99,7 +99,7 @@ class HTTPRequestTest {
 
         assertEquals(request.getPath(), "/ping");
         assertEquals(request.getRawPath(), "/ping?test");
-        assertEquals(request.getQueryParam("test"), "");
+        assertEquals(request.getQueryParam("public/test"), "");
     }
 
     @Test
