@@ -1,5 +1,10 @@
+import javafx.util.Pair;
+
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +14,7 @@ public class Router {
         public void apply(A a, B b) throws IOException;
     }
 
-    private HashMap<HTTPMethod, HashMap<String, Action<HTTPRequest, HTTPResponse>>> executors = new HashMap<>();
+    private HashMap<HTTPMethod, HashMap<Pattern, Action<HTTPRequest, HTTPResponse>>> executors = new HashMap<>();
 
     public Router() {
     }
@@ -20,25 +25,40 @@ public class Router {
             executors.put(method, new HashMap<>());
         }
 
-        executors.get(method).put(path, action);
+        // Transform "/user/:id" in "/user/(?<id>.*?)
+        String regex = path.replaceAll(":(.*)", "(?<$1>[^/]+)"); // [^/]+ au lieu de .*?
+        Pattern pattern = Pattern.compile(regex);
+
+        executors.get(method).put(pattern, action);
     }
 
-    public Action<HTTPRequest, HTTPResponse> getAction(HTTPMethod method, String path) {
+    public Pair<Action<HTTPRequest, HTTPResponse>, Matcher> getAction(HTTPMethod method, String path) {
         if (executors.containsKey(method)) {
-            return executors.get(method).get(path);
+
+            for (Map.Entry<Pattern, Action<HTTPRequest, HTTPResponse>> e : executors.get(method).entrySet()) {
+                Matcher matcher = e.getKey().matcher(path);
+
+                if (matcher.matches()) {
+                    return new Pair<>(e.getValue(), matcher);
+                }
+            }
+
+            return null;
         } else {
             return null;
         }
     }
 
-    public static void main(String[] args) {
-        Pattern pattern = Pattern.compile("/test/(.*)");
-
-        Matcher m = pattern.matcher("/test/oui");
-
-        System.out.println(m.find());
-        System.out.println(m.group(1));
-    }
+//    public static void main(String[] args) {
+//        String path = "/foo/:id";
+//
+//        String regex = path.replaceAll(":(.*)", "(?<$1>[^/]+)"); // [^/]+ au lieu de .*?
+//        System.out.println(regex);
+//        Matcher m = Pattern.compile(regex).matcher("/foo/bar");
+//
+//        System.out.println(m.matches());
+//        System.out.println(m.group("id"));
+//    }
 }
 
 
