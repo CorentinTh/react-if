@@ -13,6 +13,7 @@ public class HTTPRequest {
 
     public HTTPRequest(String rawRequest) throws InvalidRequestException {
         parse(rawRequest);
+
     }
 
     private void parse(String rawRequest) throws InvalidRequestException {

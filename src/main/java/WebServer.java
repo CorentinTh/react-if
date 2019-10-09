@@ -6,18 +6,45 @@ import java.util.List;
 import java.util.Scanner;
 
 public class WebServer {
+
+    private void setRoutes(){
+        Router router = new Router();
+
+
+        router.on(HTTPMethod.GET, "/users/([0-9]*)", (httpRequest, httpResponse) -> {
+//            StringBuilder html ..
+
+
+
+//            httpResponse.sendHTML(/**/);
+        });
+
+
+    }
+
     public WebServer(int port) {
         try {
             List<Router> routers = new ArrayList<>();
 
             Router router = new Router();
             router.on(HTTPMethod.GET, "/ping", (httpRequest, httpResponse) -> {
-                System.out.println("here");
-                httpResponse.sendHTML("<h1>Yep</h1>");
+                httpResponse.sendHTML("<h1>Yep</h1> <p>User: " + httpRequest.getQueryParam("userID") +"</p>");
             });
+
             router.on(HTTPMethod.GET, "/", (httpRequest, httpResponse) -> {
                 httpResponse.sendHTML(new Scanner(getClass().getResourceAsStream("html/index.html")).useDelimiter("\\A").next());
             });
+
+            router.on(HTTPMethod.POST, "/receptionFormulaire", (httpRequest, httpResponse) -> {
+                System.out.println(httpRequest.getBody());
+                httpResponse.sendWithStatus(HTTPStatusCode.OK);
+            });
+
+            router.on(HTTPMethod.GET, "/about", (httpRequest, httpResponse) -> {
+                httpResponse.sendHTML("Fait par Tania et Corentin");
+            });
+
+
             routers.add(router);
 
             ServerSocket server = new ServerSocket(port);

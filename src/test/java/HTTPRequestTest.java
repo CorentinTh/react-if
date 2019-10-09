@@ -36,7 +36,6 @@ class HTTPRequestTest {
                 "sdfsdf\r\n" +
                 "sdfsdfsdfs";
 
-
         HTTPRequest request = new HTTPRequest(rawRequest);
 
         assertEquals(request.getMethod(), HTTPMethod.POST);
