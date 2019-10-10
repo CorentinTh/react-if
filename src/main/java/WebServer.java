@@ -28,55 +28,19 @@ public class WebServer {
                             rawRequest.append((char) inputStream.read());
                         }
 
-                        HTTPRequest request = new HTTPRequest(rawRequest.toString());
-                        HTTPResponse response = new HTTPResponse();
+                        System.out.println("[INFO] New request --------- >>");
+                        System.out.println(rawRequest);
+                        System.out.println("[INFO] --------------------- <<");
 
-                        switch (request.getMethod()) {
-                            case GET:
-                                String path = request.getPath();
-                                byte[] content;
-                                if ((content = SystemeIO.readFile(path)) == null) {
-                                    response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
-                                } else {
-                                    String[] pathSplit = path.split("\\.");
-                                    response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(path));
-                                    response.send(content);
-//                                    response.setHeader("Content-Length", String.valueOf(content.length));
-                                }
-                                break;
-                            case POST:
-                                try {
-                                    SystemeIO.appendToFile(request.getPath(), request.getBody());
-                                    response.sendWithStatus(HTTPStatusCode.OK);
-                                } catch (Exception e) {
-                                    response.sendWithStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR);
-                                }
-                                break;
-                            case PUT:
-                                try {
-                                    SystemeIO.writeFile(request.getPath(), request.getBody());
-                                    response.sendWithStatus(HTTPStatusCode.OK);
-                                } catch (Exception e) {
-                                    response.sendWithStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR);
-                                }
-                                break;
-                            case HEAD:
-                                   String filePath = request.getPath();
-                                if (SystemeIO.fileExists(request.getPath())){
-                                    String[] pathSplit = filePath.split("\\.");
-                                    response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(filePath));
-                                    response.sendWithStatus(HTTPStatusCode.OK);
-                                }else{
-                                    response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
-                                }
-                                break;
-                            case DELETE:
-                                if(!SystemeIO.deleteFile(request.getPath())){
-                                    response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
-                                }else{
-                                    response.sendWithStatus(HTTPStatusCode.OK);
-                                }
-                                break;
+                        HTTPResponse response = new HTTPResponse();
+                        HTTPRequest request;
+
+                        try{
+                            request = new HTTPRequest(rawRequest.toString());
+                            new ActionHandler(request, response);
+                        }catch (InvalidRequestException e){
+                            e.printStackTrace();
+                            response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
                         }
 
                         response.emitHttp(outputStream);

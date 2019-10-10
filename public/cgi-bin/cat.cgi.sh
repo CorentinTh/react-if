@@ -1,0 +1,1 @@
+echo `wget -qO- https://cat-fact.herokuapp.com/facts/random`

@@ -1,0 +1,25 @@
+body{
+    background-color: #eeeeee;
+}
+
+.wrapper{
+    max-width: 500px;
+    margin: 25px auto;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 25px;
+
+    box-shadow:  0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);;
+}
+
+h1{
+    text-align: center;
+}
+
+h3{
+    font-size: 25px;
+}
+
+li{
+    margin-bottom: 0;
+}

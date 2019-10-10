@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>React'IF</title>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,500,700,700italic">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrapper">
+    <h1>Bien le bonjour !</h1>
+
+    <h3>Les cgi-bin</h3>
+    <ul>
+        <li><a href="/cgi-bin/hash.cgi.js?args=steak">hash.cgi.js</a>: hachage de chaines de charactère</li>
+        <li><a href="/cgi-bin/info.cgi.js">info.cgi.js</a>: info a propos du serveur</li>
+        <li><a href="/cgi-bin/test.cgi.sh">test.cgi.sh</a>: un script shell qui dit bonjour</li>
+        <li><a href="/cgi-bin/cat.cgi.sh">cat.cgi.sh</a>: un script shell qui dit des "cat facts"</li>
+    </ul>
+
+    <h3>Démo liens HTML</h3>
+    <ul>
+        <li><a href="/dragons/index.html">dragons.html</a>: découvre Poutou</li>
+    </ul>
+
+    <h3>Dynamic</h3>
+    <p>Demande un fait a propos des chats: </p>
+    <blockquote id="cat-fact"></blockquote>
+    <button onclick="getCatFact()">Rafraichir</button>
+</div>
+
+<script>
+    const catFactEl = document.getElementById("cat-fact");
+    function getCatFact() {
+        fetch("/cgi-bin/cat.cgi.sh")
+            .then(data => data.json())
+            .then(data => catFactEl.innerText = data.text);
+    }
+
+    getCatFact();
+</script>
+</body>
+</html>

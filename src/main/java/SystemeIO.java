@@ -6,6 +6,10 @@ import java.nio.file.StandardOpenOption;
 class SystemeIO {
     static Path baseDir = Path.of(System.getProperty("user.dir"), "public");
 
+    public static Path getBaseDir() {
+        return baseDir;
+    }
+
     static byte[] readFile(String file) {
         try {
             Path path = Path.of(baseDir.toString(), file);
@@ -30,12 +34,17 @@ class SystemeIO {
 
     static boolean fileExists(String file){
         Path path = Path.of(baseDir.toString(), file);
-        System.out.println(path);
         return path.toFile().exists() && !path.toFile().isDirectory();
     }
 
-    static Boolean deleteFile(String file) throws Exception {
+    static boolean isDirectory(String file){
+        Path path = Path.of(baseDir.toString(), file);
+        return path.toFile().exists() && path.toFile().isDirectory();
+    }
+
+    static Boolean deleteFile(String file){
         Path path = Path.of(baseDir.toString(), file);
         return path.toFile().delete();
     }
+
 }
