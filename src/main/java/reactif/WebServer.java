@@ -1,8 +1,10 @@
+package reactif;
+
+import reactif.exeptions.InvalidRequestException;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 
 public class WebServer {
 
@@ -11,7 +13,6 @@ public class WebServer {
 
             ServerSocket server = new ServerSocket(port);
             System.out.println("[INFO] Server started on port " + port);
-
 
             while (true) {
                 Socket socket = server.accept();

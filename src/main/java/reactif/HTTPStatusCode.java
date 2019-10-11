@@ -1,3 +1,5 @@
+package reactif;
+
 public enum HTTPStatusCode {
     OK(200, "OK"),
     CREATED(201, "Created"),

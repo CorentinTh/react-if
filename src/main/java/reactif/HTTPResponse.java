@@ -1,3 +1,5 @@
+package reactif;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -19,7 +21,6 @@ class HTTPResponse {
         setHeader("Content-Length", String.valueOf(body.length));
     }
 
-
     void send(byte[] text) {
         body = text;
         statusCode = HTTPStatusCode.OK;
@@ -33,22 +34,6 @@ class HTTPResponse {
     void setHeader(String key, String value) {
         headers.put(key, value);
     }
-
-//    byte[] getRawHTTP() {
-//        StringBuilder builder = new StringBuilder();
-//
-//        builder.append("HTTP/1.0 ").append(statusCode.getCode()).append(" ").append(statusCode.getMessage()).append("\r\n");
-//
-//        String headersStr = headers.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\r\n"));
-//        builder.append(headersStr);
-//
-//        if (body != null) {
-//            builder.append("\r\n\r\n").append(body);
-//        }
-//
-//        return builder.toString();
-//    }
-
 
     void emitHttp(OutputStream stream) throws IOException {
         StringBuilder builder = new StringBuilder();
@@ -64,6 +49,5 @@ class HTTPResponse {
             stream.write("\r\n\r\n".getBytes());
             stream.write(body);
         }
-
     }
 }
