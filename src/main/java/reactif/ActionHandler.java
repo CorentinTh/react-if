@@ -26,6 +26,7 @@ public class ActionHandler {
                 this.onDelete(request, response);
                 break;
             default:
+                System.out.println("Bad method");
                 response.sendWithStatus(HTTPStatusCode.METHOD_NOT_ALLOWED);
                 break;
         }
