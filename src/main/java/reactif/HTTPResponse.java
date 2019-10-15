@@ -5,12 +5,12 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-class HTTPResponse {
+public class HTTPResponse {
     private HTTPStatusCode statusCode = HTTPStatusCode.NOT_FOUND;
     private HashMap<String, String> headers = new HashMap<>();
     private byte[] body = null;
 
-    HTTPResponse() {
+    public HTTPResponse() {
         setHeader("X-Powered-By", "react-if");
         setHeader("Connection", "close");
     }
