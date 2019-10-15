@@ -26,7 +26,7 @@ public class ActionHandler {
                 this.onDelete(request, response);
                 break;
             default:
-                response.sendWithStatus(HTTPStatusCode.NOT_IMPLEMENTED);
+                response.sendWithStatus(HTTPStatusCode.METHOD_NOT_ALLOWED);
                 break;
         }
 
@@ -93,7 +93,7 @@ public class ActionHandler {
                         response.send(result);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
+                        response.sendWithStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR);
                     }
                 } else {
                     response.setHeader("Content-Type", getMime(path));
@@ -112,9 +112,8 @@ public class ActionHandler {
                 response.setHeader("Content-Type", getMime(path));
                 response.send(content);
             }else {
-
+                response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
             }
-
 
         } else {
             response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
