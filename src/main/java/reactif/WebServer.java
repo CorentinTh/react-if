@@ -23,28 +23,51 @@ public class WebServer {
                         // in/out streams
                         BufferedReader inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         PrintStream outputStream = new PrintStream(socket.getOutputStream());
-                        // Fetching raw request
-                        StringBuilder rawRequest = new StringBuilder();
-                        while (inputStream.ready()) {
-                            rawRequest.append((char) inputStream.read());
-                        }
 
-                        System.out.println("[INFO] New request --------- >>");
-                        System.out.println(rawRequest);
-                        System.out.println("[INFO] --------------------- <<");
+                        // Fetching raw request
+//                        StringBuilder rawRequestBuilder = new StringBuilder();
+//                        while (inputStream.ready()) {
+//                            rawRequestBuilder.append((char) inputStream.read());
+//                        }
+//                        String rawRequest = rawRequestBuilder.toString();
+
+
+//                        System.out.println("[INFO] New request --------- >>");
+//                        System.out.println(rawRequest);
+//                        System.out.println("[INFO] --------------------- <<");
+//
+//                        if(!rawRequest.isEmpty() && !rawRequest.equals("\r\n")) {
+//                            HTTPResponse response = new HTTPResponse();
+//                            HTTPRequest request;
+//
+//                            try {
+//                                request = new HTTPRequest(rawRequest);
+//                                new ActionHandler(request, response);
+//                            } catch (InvalidRequestException e) {
+//                                e.printStackTrace();
+//                                response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
+//                            }
+//                            response.emitHttp(outputStream);
+//
+//                        }
+
+
+                        HTTPRequestReader reader = new HTTPRequestReader(inputStream);
+
 
                         HTTPResponse response = new HTTPResponse();
                         HTTPRequest request;
 
-                        try{
-                            request = new HTTPRequest(rawRequest.toString());
+                        try {
+                            request = reader.getRequest();
                             new ActionHandler(request, response);
-                        }catch (InvalidRequestException e){
+                        } catch (InvalidRequestException e) {
                             e.printStackTrace();
                             response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
                         }
-
                         response.emitHttp(outputStream);
+
+
                         outputStream.flush();
                         inputStream.close();
                         outputStream.close();
