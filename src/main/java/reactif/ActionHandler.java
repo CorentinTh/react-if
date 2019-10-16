@@ -45,7 +45,7 @@ public class ActionHandler {
         String filePath = request.getPath();
         if (SystemeIO.fileExists(request.getPath())) {
             response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(filePath));
-            response.sendWithStatus(HTTPStatusCode.OK);
+            response.sendWithStatus(HTTPStatusCode.NO_CONTENT);
         } else {
             response.sendWithStatus(HTTPStatusCode.NOT_FOUND);
         }
@@ -54,7 +54,7 @@ public class ActionHandler {
     private void onPut(HTTPRequest request, HTTPResponse response) {
         try {
             SystemeIO.writeFile(request.getPath(), request.getBody());
-            response.sendWithStatus(HTTPStatusCode.OK);
+            response.sendWithStatus(HTTPStatusCode.CREATED);
         } catch (Exception e) {
             response.sendWithStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR);
         }

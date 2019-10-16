@@ -36,16 +36,34 @@
     <p>Demande un fait a propos des chats: </p>
     <blockquote id="cat-fact"></blockquote>
     <button onclick="getCatFact()">Rafraichir</button>
+
+    <br>
+    <hr>
+    <br>
+    <p>Test de hachage: </p>
+    <input type="text" id="hash-input" onkeyup="getHash()" value="steak">
+    <blockquote id="hash-result"></blockquote>
+
 </div>
 
 <script>
+    const hashResultEl = document.getElementById("hash-result");
+    const hashInputEl = document.getElementById("hash-input");
     const catFactEl = document.getElementById("cat-fact");
-    function getCatFact() {
+
+    const getCatFact = () => {
         fetch("/cgi-bin/cat.cgi.sh")
             .then(data => data.json())
             .then(data => catFactEl.innerText = data.text);
-    }
+    };
 
+    const getHash = () => {
+        fetch("/cgi-bin/hash.cgi.js?args=" + hashInputEl.value)
+            .then(data => data.text())
+            .then(data => hashResultEl.innerText = data);
+    };
+
+    getHash();
     getCatFact();
 </script>
 </body>

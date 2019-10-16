@@ -19,57 +19,31 @@ public class WebServer {
                 System.out.println("[INFO] New connection");
                 // Reception and response thread
                 new Thread(() -> {
+                    // context is COPIED in lambda functions: meaning that "socket" is a copy of the previous one
+                    // so, no overwriting
+
                     try {
                         // in/out streams
-                        BufferedReader inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         PrintStream outputStream = new PrintStream(socket.getOutputStream());
 
-                        // Fetching raw request
-//                        StringBuilder rawRequestBuilder = new StringBuilder();
-//                        while (inputStream.ready()) {
-//                            rawRequestBuilder.append((char) inputStream.read());
-//                        }
-//                        String rawRequest = rawRequestBuilder.toString();
+                        HTTPRequestReader requestReader = new HTTPRequestReader(bufferedReader);
 
-
-//                        System.out.println("[INFO] New request --------- >>");
-//                        System.out.println(rawRequest);
-//                        System.out.println("[INFO] --------------------- <<");
-//
-//                        if(!rawRequest.isEmpty() && !rawRequest.equals("\r\n")) {
-//                            HTTPResponse response = new HTTPResponse();
-//                            HTTPRequest request;
-//
-//                            try {
-//                                request = new HTTPRequest(rawRequest);
-//                                new ActionHandler(request, response);
-//                            } catch (InvalidRequestException e) {
-//                                e.printStackTrace();
-//                                response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
-//                            }
-//                            response.emitHttp(outputStream);
-//
-//                        }
-
-
-                        HTTPRequestReader reader = new HTTPRequestReader(inputStream);
-
-
-                        HTTPResponse response = new HTTPResponse();
                         HTTPRequest request;
+                        HTTPResponse response = new HTTPResponse();
 
                         try {
-                            request = reader.getRequest();
+                            request = requestReader.getRequest();
                             new ActionHandler(request, response);
                         } catch (InvalidRequestException e) {
                             e.printStackTrace();
                             response.sendWithStatus(HTTPStatusCode.BAD_REQUEST);
                         }
+
                         response.emitHttp(outputStream);
 
-
                         outputStream.flush();
-                        inputStream.close();
+                        bufferedReader.close();
                         outputStream.close();
                         socket.close();
 
